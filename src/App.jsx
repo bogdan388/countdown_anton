@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import Particles from 'react-tsparticles'
-import { loadFull } from 'tsparticles'
+import { useState, useEffect, useCallback } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import Particles from '@tsparticles/react'
+import { loadSlim } from '@tsparticles/slim'
 import './App.css'
 
 function App() {
@@ -13,6 +13,9 @@ function App() {
   })
   const [explosions, setExplosions] = useState([])
   const [screenShake, setScreenShake] = useState(false)
+  const [flashBang, setFlashBang] = useState(false)
+  const [megaExplosion, setMegaExplosion] = useState(false)
+  const [glitchIntensity, setGlitchIntensity] = useState(1)
 
   useEffect(() => {
     const eventDate = new Date('November 6, 2025 18:30:00').getTime()
@@ -28,39 +31,82 @@ function App() {
         seconds: Math.floor((distance % (1000 * 60)) / 1000)
       })
 
-      // Random explosions every 3 seconds
-      if (Math.random() > 0.95) {
+      // MORE FREQUENT EXPLOSIONS
+      if (Math.random() > 0.85) {
         createExplosion()
+      }
+
+      // Random mega explosions
+      if (Math.random() > 0.98) {
+        triggerMegaExplosion()
+      }
+
+      // Random flashbangs
+      if (Math.random() > 0.95) {
+        triggerFlashBang()
+      }
+
+      // Random glitch intensity changes
+      if (Math.random() > 0.9) {
+        setGlitchIntensity(Math.random() * 5 + 1)
       }
     }, 1000)
 
-    // Screen shake every 5 seconds
+    // MORE FREQUENT SCREEN SHAKE
     const shakeInterval = setInterval(() => {
       setScreenShake(true)
-      setTimeout(() => setScreenShake(false), 200)
-    }, 5000)
+      setTimeout(() => setScreenShake(false), 300)
+    }, 3000)
+
+    // Continuous mini explosions
+    const miniExplosionInterval = setInterval(() => {
+      if (Math.random() > 0.5) {
+        createExplosion()
+      }
+    }, 500)
 
     return () => {
       clearInterval(timer)
       clearInterval(shakeInterval)
+      clearInterval(miniExplosionInterval)
     }
   }, [])
 
   const createExplosion = () => {
+    const emojis = ['💥', '🔥', '💀', '⚡', '💣', '🌟', '✨', '💫', '🦾', '🦿', '🏍️', '🤖']
     const newExplosion = {
-      id: Date.now(),
+      id: Date.now() + Math.random(),
       x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight
+      y: Math.random() * window.innerHeight,
+      emoji: emojis[Math.floor(Math.random() * emojis.length)]
     }
     setExplosions(prev => [...prev, newExplosion])
     setTimeout(() => {
       setExplosions(prev => prev.filter(exp => exp.id !== newExplosion.id))
-    }, 1000)
+    }, 800)
   }
 
-  const particlesInit = async (main) => {
-    await loadFull(main)
+  const triggerFlashBang = () => {
+    setFlashBang(true)
+    setTimeout(() => setFlashBang(false), 150)
   }
+
+  const triggerMegaExplosion = () => {
+    setMegaExplosion(true)
+    // Create multiple explosions at once
+    for (let i = 0; i < 15; i++) {
+      setTimeout(() => createExplosion(), i * 50)
+    }
+    setScreenShake(true)
+    setTimeout(() => {
+      setMegaExplosion(false)
+      setScreenShake(false)
+    }, 800)
+  }
+
+  const particlesInit = useCallback(async (engine) => {
+    await loadSlim(engine)
+  }, [])
 
   const particlesConfig = {
     fullScreen: {
@@ -69,163 +115,207 @@ function App() {
     },
     particles: {
       number: {
-        value: 150,
+        value: 200,
         density: {
           enable: true,
-          value_area: 800
+          area: 600
         }
       },
       color: {
-        value: ['#ff0000', '#ff6600', '#ffff00', '#ff00ff', '#00ffff']
+        value: ['#ff0000', '#ff3300', '#ff6600', '#ff9900', '#ffff00', '#ff00ff', '#00ffff', '#ffffff']
       },
       shape: {
-        type: ['circle', 'triangle', 'star'],
+        type: ['circle', 'triangle', 'star', 'polygon'],
       },
       opacity: {
-        value: 0.8,
-        random: true,
+        value: { min: 0.1, max: 0.9 },
         animation: {
           enable: true,
-          speed: 1,
-          minimumValue: 0.1,
+          speed: 3,
           sync: false
         }
       },
       size: {
-        value: 5,
-        random: true,
+        value: { min: 0.3, max: 8 },
         animation: {
           enable: true,
-          speed: 3,
-          minimumValue: 0.1,
+          speed: 8,
           sync: false
         }
       },
       move: {
         enable: true,
-        speed: 3,
+        speed: 6,
         direction: 'none',
         random: true,
         straight: false,
-        outModes: {
-          default: 'out'
-        },
+        outModes: 'out',
         attract: {
           enable: true,
-          rotateX: 600,
-          rotateY: 1200
+          rotate: {
+            x: 1200,
+            y: 1200
+          }
         }
       },
       rotate: {
-        value: 0,
-        random: true,
-        direction: 'clockwise',
+        value: { min: 0, max: 360 },
+        direction: 'random',
         animation: {
           enable: true,
-          speed: 5,
+          speed: 15,
           sync: false
+        }
+      },
+      life: {
+        duration: {
+          value: 3
         }
       }
     },
     interactivity: {
-      detectsOn: 'canvas',
+      detectsOn: 'window',
       events: {
         onHover: {
           enable: true,
-          mode: 'repulse'
+          mode: ['grab', 'repulse', 'bubble']
         },
         onClick: {
           enable: true,
           mode: 'push'
         },
-        resize: true
+        resize: {
+          enable: true
+        }
       },
       modes: {
+        grab: {
+          distance: 200,
+          links: {
+            opacity: 1,
+            color: '#ff0000'
+          }
+        },
         repulse: {
-          distance: 100,
-          duration: 0.4
+          distance: 150,
+          duration: 0.2
+        },
+        bubble: {
+          distance: 200,
+          size: 15,
+          duration: 2,
+          opacity: 1
         },
         push: {
-          quantity: 10
+          quantity: 20
         }
       }
     }
   }
 
   return (
-    <div className={`app ${screenShake ? 'shake' : ''}`}>
+    <div className={`app ${screenShake ? 'shake' : ''} ${megaExplosion ? 'mega-explosion' : ''}`}>
+      {flashBang && <div className="flashbang" />}
+
       <Particles
         id="tsparticles"
         init={particlesInit}
         options={particlesConfig}
       />
 
-      {/* Explosions */}
-      {explosions.map(exp => (
-        <motion.div
-          key={exp.id}
-          className="explosion"
-          style={{ left: exp.x, top: exp.y }}
-          initial={{ scale: 0, opacity: 1 }}
-          animate={{ scale: 3, opacity: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          💥
-        </motion.div>
-      ))}
+      {/* EXPLOSIONS EVERYWHERE */}
+      <AnimatePresence>
+        {explosions.map(exp => (
+          <motion.div
+            key={exp.id}
+            className="explosion"
+            style={{ left: exp.x, top: exp.y }}
+            initial={{ scale: 0, opacity: 1, rotate: 0 }}
+            animate={{
+              scale: [0, 2, 4],
+              opacity: [1, 0.8, 0],
+              rotate: [0, 180, 360]
+            }}
+            exit={{ scale: 0, opacity: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            {exp.emoji}
+          </motion.div>
+        ))}
+      </AnimatePresence>
 
-      {/* Floating emojis */}
+      {/* MORE Floating emojis - FASTER AND MORE */}
       <div className="emoji-background">
-        {Array.from({ length: 30 }).map((_, i) => (
+        {Array.from({ length: 50 }).map((_, i) => (
           <motion.div
             key={i}
             className="floating-emoji"
             style={{
               left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${5 + Math.random() * 5}s`
+              fontSize: `${2 + Math.random() * 3}em`
             }}
             animate={{
               y: ['-100vh', '100vh'],
-              rotate: [0, 360],
-              x: [0, Math.random() * 100 - 50]
+              rotate: [0, 720],
+              x: [0, Math.sin(i) * 200],
+              scale: [0.5, 1.5, 0.5]
             }}
             transition={{
-              duration: 5 + Math.random() * 5,
+              duration: 3 + Math.random() * 3,
               repeat: Infinity,
               ease: 'linear',
-              delay: Math.random() * 5
+              delay: Math.random() * 3
             }}
           >
-            {['🔥', '🤘', '💀', '⚡', '🎸', '🎵', '💥', '⚠️'][Math.floor(Math.random() * 8)]}
+            {['🔥', '🤘', '💀', '⚡', '🎸', '🎵', '💥', '⚠️', '💣', '🌟', '✨', '💫', '🦾', '🦿', '🏍️', '🤖', '⚙️'][Math.floor(Math.random() * 17)]}
           </motion.div>
         ))}
       </div>
 
       <div className="content">
-        {/* Title */}
+        {/* Title with EXTREME glitch */}
         <motion.div
           className="title-container"
           animate={{
-            scale: [1, 1.1, 1],
-            rotate: [-2, 2, -2]
+            scale: [1, 1.15, 0.95, 1.1, 1],
+            rotate: [-3, 3, -2, 2, 0],
+            y: [0, -10, 5, -5, 0]
           }}
           transition={{
-            duration: 2,
+            duration: 1,
             repeat: Infinity,
             ease: 'easeInOut'
           }}
         >
-          <h1 className="main-title glitch" data-text="SCARLET AURA">
+          <motion.h1
+            className="main-title glitch"
+            data-text="SCARLET AURA"
+            style={{ '--glitch-intensity': glitchIntensity }}
+            animate={{
+              textShadow: [
+                '0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000',
+                '0 0 20px #ff00ff, 0 0 40px #ff00ff, 0 0 60px #ff00ff',
+                '0 0 30px #00ffff, 0 0 60px #00ffff, 0 0 90px #00ffff',
+                '0 0 20px #ffff00, 0 0 40px #ffff00, 0 0 60px #ffff00',
+                '0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000'
+              ]
+            }}
+            transition={{
+              duration: 1,
+              repeat: Infinity
+            }}
+          >
             🔥🎸 SCARLET AURA 🎸🔥
-          </h1>
+          </motion.h1>
           <motion.h2
             className="subtitle"
             animate={{
-              color: ['#ff0000', '#ff00ff', '#00ffff', '#ffff00', '#ff0000']
+              color: ['#ff0000', '#ff6600', '#ffff00', '#ff00ff', '#00ffff', '#ff0000'],
+              scale: [1, 1.1, 0.9, 1.15, 1],
+              rotate: [-5, 5, -3, 3, 0]
             }}
             transition={{
-              duration: 2,
+              duration: 1.5,
               repeat: Infinity
             }}
           >
@@ -234,11 +324,12 @@ function App() {
           <motion.h3
             className="brainrot-text"
             animate={{
-              scale: [1, 1.2, 1],
-              rotate: [-5, 5, -5]
+              scale: [1, 1.3, 0.8, 1.2, 1],
+              rotate: [-10, 10, -8, 8, 0],
+              y: [0, -20, 10, -10, 0]
             }}
             transition={{
-              duration: 0.5,
+              duration: 0.4,
               repeat: Infinity
             }}
           >
@@ -246,7 +337,7 @@ function App() {
           </motion.h3>
         </motion.div>
 
-        {/* Band Images */}
+        {/* Band Images - SPINNING LIKE CRAZY */}
         <div className="images-container">
           {[
             'https://www.metal-archives.com/images/3/5/4/0/3540538884_logo.jpg?0005',
@@ -257,129 +348,223 @@ function App() {
               key={i}
               className="image-wrapper"
               animate={{
-                rotate: 360,
-                scale: [1, 1.1, 1]
+                rotate: i % 2 === 0 ? 360 : -360,
+                scale: [1, 1.2, 0.9, 1.15, 1],
+                y: [0, -30, 20, -20, 0]
               }}
               transition={{
                 rotate: {
-                  duration: 3 + i,
+                  duration: 2 - i * 0.3,
                   repeat: Infinity,
                   ease: 'linear'
                 },
                 scale: {
-                  duration: 1,
+                  duration: 0.8,
                   repeat: Infinity,
                   repeatType: 'reverse'
+                },
+                y: {
+                  duration: 1.5 + i * 0.3,
+                  repeat: Infinity,
+                  ease: 'easeInOut'
                 }
               }}
-              whileHover={{ scale: 1.5 }}
-              onClick={createExplosion}
+              whileHover={{
+                scale: 2,
+                rotate: i % 2 === 0 ? 720 : -720,
+                transition: { duration: 0.5 }
+              }}
+              onClick={() => {
+                createExplosion()
+                triggerFlashBang()
+              }}
             >
               <img src={src} alt={`Anton Rock Band ${i + 1}`} className="rock-image" />
             </motion.div>
           ))}
         </div>
 
-        {/* Countdown */}
+        {/* Countdown - EXTREME ANIMATIONS */}
         <div className="countdown-container">
-          {Object.entries(timeLeft).map(([unit, value]) => (
+          {Object.entries(timeLeft).map(([unit, value], index) => (
             <motion.div
               key={unit}
               className="countdown-box"
               animate={{
-                scale: [1, 1.05, 1],
-                rotate: [-3, 3, -3],
+                scale: [1, 1.1, 0.95, 1.08, 1],
+                rotate: [-5, 5, -3, 3, 0],
+                y: [0, -15, 10, -10, 0],
                 boxShadow: [
-                  '0 0 20px #ff00ff',
-                  '0 0 40px #00ffff',
-                  '0 0 20px #ff00ff'
+                  '0 0 20px #ff00ff, 0 0 40px #ff0000',
+                  '0 0 40px #00ffff, 0 0 60px #ffff00',
+                  '0 0 60px #ff0000, 0 0 80px #ff00ff',
+                  '0 0 40px #ffff00, 0 0 60px #00ffff',
+                  '0 0 20px #ff00ff, 0 0 40px #ff0000'
                 ]
               }}
               transition={{
-                duration: 1,
-                repeat: Infinity
+                duration: 0.8,
+                repeat: Infinity,
+                delay: index * 0.1
               }}
-              whileHover={{ scale: 1.2, rotate: 0 }}
+              whileHover={{
+                scale: 1.5,
+                rotate: 0,
+                transition: { duration: 0.2 }
+              }}
+              onClick={createExplosion}
             >
               <motion.div
                 className="countdown-number"
                 animate={{
-                  color: ['#ffffff', '#ff00ff', '#00ffff', '#ffff00', '#ffffff']
+                  color: ['#ffffff', '#ff0000', '#ff00ff', '#00ffff', '#ffff00', '#ffffff'],
+                  scale: [1, 1.2, 0.9, 1.1, 1]
                 }}
                 transition={{
-                  duration: 2,
+                  duration: 1.5,
                   repeat: Infinity
                 }}
               >
                 {String(value).padStart(2, '0')}
               </motion.div>
-              <div className="countdown-label">{unit.toUpperCase()}</div>
+              <motion.div
+                className="countdown-label"
+                animate={{
+                  scale: [1, 1.1, 1],
+                  opacity: [1, 0.8, 1]
+                }}
+                transition={{
+                  duration: 0.5,
+                  repeat: Infinity
+                }}
+              >
+                {unit.toUpperCase()}
+              </motion.div>
             </motion.div>
           ))}
         </div>
 
-        {/* Venue Info */}
+        {/* Venue Info - SHAKING HARD */}
         <motion.div
           className="venue-info"
           animate={{
-            x: [-5, 5, -5]
+            x: [-10, 10, -8, 8, 0],
+            y: [0, -5, 5, -3, 0],
+            rotate: [-2, 2, -1, 1, 0]
           }}
           transition={{
-            duration: 0.5,
-            repeat: Infinity
-          }}
-        >
-          <p className="venue-text">📍 QUANTIC, BUCUREȘTI 📍</p>
-          <p className="venue-text">📅 NOVEMBER 6, 2025 @ 18:30 📅</p>
-        </motion.div>
-
-        {/* Info Box */}
-        <motion.div
-          className="info-box"
-          animate={{
-            borderColor: ['#ff00ff', '#00ffff', '#ffff00', '#ff0000', '#ff00ff']
-          }}
-          transition={{
-            duration: 3,
+            duration: 0.3,
             repeat: Infinity
           }}
         >
           <motion.p
-            animate={{ scale: [1, 1.05, 1] }}
-            transition={{ duration: 0.5, repeat: Infinity }}
+            className="venue-text"
+            animate={{
+              scale: [1, 1.1, 1],
+              textShadow: [
+                '0 0 10px #ff0000, 0 0 20px #ff0000',
+                '0 0 20px #ffff00, 0 0 40px #ffff00',
+                '0 0 10px #ff0000, 0 0 20px #ff0000'
+              ]
+            }}
+            transition={{
+              duration: 0.5,
+              repeat: Infinity
+            }}
           >
-            🎫 GET YOUR TICKETS NOW OR CRY LATER 🎫
+            📍 QUANTIC, BUCUREȘTI 📍
           </motion.p>
-          <p>💀 SPECIAL GUESTS 💀</p>
-          <p>🔊 UNFORGETTABLE ATMOSPHERE 🔊</p>
-          <p>🎵 CLOSING TOUR CONCERT 🎵</p>
-          <p>⚡ PURE BRAINROT ENERGY ⚡</p>
+          <motion.p
+            className="venue-text"
+            animate={{
+              scale: [1, 1.15, 1],
+              textShadow: [
+                '0 0 10px #ff0000, 0 0 20px #ff0000',
+                '0 0 20px #ff00ff, 0 0 40px #ff00ff',
+                '0 0 10px #ff0000, 0 0 20px #ff0000'
+              ]
+            }}
+            transition={{
+              duration: 0.6,
+              repeat: Infinity
+            }}
+          >
+            📅 NOVEMBER 6, 2025 @ 18:30 📅
+          </motion.p>
         </motion.div>
 
-        {/* Button */}
+        {/* Info Box - PULSING HARD */}
+        <motion.div
+          className="info-box"
+          animate={{
+            borderColor: ['#ff00ff', '#ff0000', '#00ffff', '#ffff00', '#ff00ff'],
+            scale: [1, 1.03, 0.98, 1.02, 1],
+            boxShadow: [
+              '0 0 30px #ff00ff',
+              '0 0 50px #ff0000',
+              '0 0 70px #00ffff',
+              '0 0 50px #ffff00',
+              '0 0 30px #ff00ff'
+            ]
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity
+          }}
+        >
+          {[
+            '🎫 GET YOUR TICKETS NOW OR CRY LATER 🎫',
+            '💀 SPECIAL GUESTS 💀',
+            '🔊 UNFORGETTABLE ATMOSPHERE 🔊',
+            '🎵 CLOSING TOUR CONCERT 🎵',
+            '⚡ PURE BRAINROT ENERGY ⚡'
+          ].map((text, i) => (
+            <motion.p
+              key={i}
+              animate={{
+                scale: [1, 1.08, 1],
+                x: i % 2 === 0 ? [-5, 5, -5] : [5, -5, 5]
+              }}
+              transition={{
+                duration: 0.5 + i * 0.1,
+                repeat: Infinity,
+                delay: i * 0.1
+              }}
+            >
+              {text}
+            </motion.p>
+          ))}
+        </motion.div>
+
+        {/* Button - GOING CRAZY */}
         <motion.a
           href="https://www.iabilet.ro/bilete-scarlet-aura-10-ani-cu-aripi-de-rock-111891"
           target="_blank"
           rel="noopener noreferrer"
           className="buy-button"
           whileHover={{
-            scale: 1.2,
-            rotate: [0, -5, 5, -5, 0],
-            transition: { duration: 0.3 }
+            scale: 1.4,
+            rotate: [0, -10, 10, -10, 10, 0],
+            transition: { duration: 0.4 }
           }}
-          whileTap={{ scale: 0.9 }}
+          whileTap={{ scale: 0.8 }}
           animate={{
+            scale: [1, 1.1, 0.95, 1.08, 1],
+            rotate: [-3, 3, -2, 2, 0],
             boxShadow: [
-              '0 0 20px #ff00ff',
-              '0 0 40px #00ffff',
-              '0 0 60px #ffff00',
-              '0 0 40px #00ffff',
-              '0 0 20px #ff00ff'
+              '0 0 20px #ff00ff, 0 0 40px #ff0000',
+              '0 0 40px #00ffff, 0 0 60px #ffff00',
+              '0 0 60px #ff0000, 0 0 80px #ff00ff',
+              '0 0 80px #ffff00, 0 0 100px #00ffff',
+              '0 0 20px #ff00ff, 0 0 40px #ff0000'
             ]
           }}
           transition={{
-            duration: 2,
+            duration: 1,
             repeat: Infinity
+          }}
+          onClick={(e) => {
+            triggerMegaExplosion()
           }}
         >
           🎟️ BUY TICKETS OR REGRET FOREVER 🎟️
@@ -388,11 +573,12 @@ function App() {
         <motion.div
           className="final-text"
           animate={{
-            rotate: [-2, 2, -2],
-            scale: [1, 1.1, 1]
+            rotate: [-5, 5, -3, 3, 0],
+            scale: [1, 1.2, 0.9, 1.15, 1],
+            y: [0, -20, 10, -10, 0]
           }}
           transition={{
-            duration: 0.5,
+            duration: 0.4,
             repeat: Infinity
           }}
         >
