@@ -201,7 +201,7 @@ function App() {
         <div className="gradient-blob blob-2" />
         <div className="gradient-blob blob-3" />
 
-        {/* Title with 3D transform and glassmorphism */}
+        {/* Title with flames */}
         <motion.div
           className="title-container"
           style={{ y: y1, opacity }}
@@ -234,14 +234,32 @@ function App() {
           >
             ⚡ 10 ANI CU ARIPI DE ROCK ⚡
           </motion.h2>
-          <motion.h3
-            className="brainrot-text"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-          >
-            🧠❌ NO BRAIN ONLY HEADBANG 🤘
-          </motion.h3>
+        </motion.div>
+
+        {/* BOGDAN MAI SUNT text with flames */}
+        <motion.div
+          className="bogdan-section"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.6, type: 'spring' }}
+        >
+          <div className="flame-text-wrapper">
+            <div className="flame flame-left" />
+            <motion.h2
+              className="bogdan-text"
+              animate={{
+                textShadow: [
+                  '0 0 20px #ff6600, 0 0 40px #ff0000',
+                  '0 0 40px #ff0000, 0 0 60px #ff6600',
+                  '0 0 20px #ff6600, 0 0 40px #ff0000'
+                ]
+              }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              BOGDAN MAI SUNT
+            </motion.h2>
+            <div className="flame flame-right" />
+          </div>
         </motion.div>
 
         {/* Band Images with 3D card effect */}
@@ -276,44 +294,74 @@ function App() {
           ))}
         </motion.div>
 
-        {/* Countdown with glassmorphism */}
-        <div className="countdown-container">
-          {Object.entries(timeLeft).map(([unit, value], index) => (
-            <motion.div
-              key={unit}
-              className="countdown-card"
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                delay: index * 0.1,
-                type: 'spring',
-                stiffness: 100
-              }}
-              whileHover={{
-                scale: 1.1,
-                y: -10,
-                transition: { type: 'spring', stiffness: 400 }
-              }}
-            >
-              <div className="card-shine" />
+        {/* Countdown with glassmorphism and flames */}
+        <div className="countdown-wrapper">
+          <div className="countdown-container">
+            {Object.entries(timeLeft).map(([unit, value], index) => (
               <motion.div
-                className="countdown-number"
-                animate={{
-                  textShadow: [
-                    '0 0 20px #ff0000',
-                    '0 0 40px #ff00ff',
-                    '0 0 20px #00ffff',
-                    '0 0 20px #ff0000'
-                  ]
+                key={unit}
+                className="countdown-card"
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: index * 0.1,
+                  type: 'spring',
+                  stiffness: 100
                 }}
-                transition={{ duration: 2, repeat: Infinity }}
+                whileHover={{
+                  scale: 1.1,
+                  y: -10,
+                  transition: { type: 'spring', stiffness: 400 }
+                }}
               >
-                {String(value).padStart(2, '0')}
+                <div className="card-shine" />
+                <div className="flame flame-card-left" />
+                <div className="flame flame-card-right" />
+                <motion.div
+                  className="countdown-number"
+                  animate={{
+                    textShadow: [
+                      '0 0 20px #ff0000',
+                      '0 0 40px #ff00ff',
+                      '0 0 20px #00ffff',
+                      '0 0 20px #ff0000'
+                    ]
+                  }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  {String(value).padStart(2, '0')}
+                </motion.div>
+                <div className="countdown-label">{unit.toUpperCase()}</div>
               </motion.div>
-              <div className="countdown-label">{unit.toUpperCase()}</div>
-            </motion.div>
-          ))}
+            ))}
+          </div>
         </div>
+
+        {/* PANA LA CONCERT text with flames */}
+        <motion.div
+          className="pana-section"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 1, type: 'spring' }}
+        >
+          <div className="flame-text-wrapper">
+            <div className="flame flame-left" />
+            <motion.h2
+              className="pana-text"
+              animate={{
+                textShadow: [
+                  '0 0 20px #ff6600, 0 0 40px #ff0000',
+                  '0 0 40px #ff0000, 0 0 60px #ff6600',
+                  '0 0 20px #ff6600, 0 0 40px #ff0000'
+                ]
+              }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              PANA LA CONCERT !!!!
+            </motion.h2>
+            <div className="flame flame-right" />
+          </div>
+        </motion.div>
 
         {/* Venue Info with smooth animations */}
         <motion.div
