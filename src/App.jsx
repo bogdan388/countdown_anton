@@ -167,6 +167,33 @@ function App() {
         ))}
       </AnimatePresence>
 
+      {/* FLOATING BOGDAN NAMES EVERYWHERE */}
+      <div className="floating-bogdan-container">
+        {Array.from({ length: 15 }).map((_, i) => (
+          <motion.div
+            key={`bogdan-${i}`}
+            className="floating-bogdan"
+            style={{
+              left: `${(i * 7 + 5) % 100}%`,
+              top: `${(i * 11 + 10) % 100}%`,
+            }}
+            animate={{
+              x: [0, Math.sin(i) * 100, 0],
+              y: [0, Math.cos(i) * 100, 0],
+              rotate: [0, 360],
+              scale: [1, 1.3, 1]
+            }}
+            transition={{
+              duration: 10 + i * 2,
+              repeat: Infinity,
+              ease: 'linear'
+            }}
+          >
+            🔥BOGDAN🔥
+          </motion.div>
+        ))}
+      </div>
+
       {/* 3D Wolves and Metal Arms */}
       <div className="elements-3d-background">
         {/* Wolves */}
@@ -444,62 +471,6 @@ function App() {
           >
             📅 NOVEMBER 6, 2025 @ 18:30
           </motion.p>
-        </motion.div>
-
-        {/* Info Box with blur backdrop */}
-        <motion.div
-          className="info-box glass-card"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 1, type: 'spring' }}
-        >
-          {[
-            '🎫 GET YOUR TICKETS NOW OR CRY LATER',
-            '💀 SPECIAL GUESTS',
-            '🔊 UNFORGETTABLE ATMOSPHERE',
-            '🎵 CLOSING TOUR CONCERT',
-            '⚡ PURE BRAINROT ENERGY'
-          ].map((text, i) => (
-            <motion.p
-              key={i}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 1.2 + i * 0.1 }}
-              whileHover={{ x: 10, transition: { duration: 0.2 } }}
-            >
-              {text}
-            </motion.p>
-          ))}
-        </motion.div>
-
-        {/* Modern button with magnetic effect */}
-        <motion.a
-          href="https://www.iabilet.ro/bilete-scarlet-aura-10-ani-cu-aripi-de-rock-111891"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="buy-button modern-button"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.5, type: 'spring' }}
-          whileHover={{
-            scale: 1.05,
-            boxShadow: '0 20px 60px rgba(255, 0, 255, 0.6)',
-            transition: { duration: 0.2 }
-          }}
-          whileTap={{ scale: 0.95 }}
-          onClick={createExplosion}
-        >
-          <span className="button-gradient" />
-          <span className="button-text">🎟️ BUY TICKETS NOW 🎟️</span>
-        </motion.a>
-
-        <motion.div
-          className="final-text"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.8 }}
-        >
-          🧠❌ ZERO THOUGHTS HEAD EMPTY ONLY ROCK 🎸
         </motion.div>
       </div>
     </div>
