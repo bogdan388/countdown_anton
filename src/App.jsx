@@ -197,7 +197,7 @@ function App() {
       {/* 3D Wolves and Metal Arms */}
       <div className="elements-3d-background">
         {/* Wolves */}
-        {Array.from({ length: 6 }).map((_, i) => (
+        {Array.from({ length: 3 }).map((_, i) => (
           <motion.div
             key={`wolf-${i}`}
             className="wolf-3d"
@@ -241,7 +241,7 @@ function App() {
         ))}
 
         {/* Metal Arms */}
-        {Array.from({ length: 8 }).map((_, i) => (
+        {Array.from({ length: 4 }).map((_, i) => (
           <motion.div
             key={`arm-${i}`}
             className="metal-arm-3d"
