@@ -167,30 +167,92 @@ function App() {
         ))}
       </AnimatePresence>
 
-      {/* Minimal floating emojis with parallax */}
-      <div className="emoji-background">
-        {Array.from({ length: 12 }).map((_, i) => (
+      {/* 3D Wolves and Metal Arms */}
+      <div className="elements-3d-background">
+        {/* Wolves */}
+        {Array.from({ length: 6 }).map((_, i) => (
           <motion.div
-            key={i}
-            className="floating-emoji"
+            key={`wolf-${i}`}
+            className="wolf-3d"
             style={{
-              left: `${(i * 8 + 10) % 100}%`,
-              fontSize: `${2 + Math.random()}em`,
+              left: `${(i * 20 + 5) % 100}%`,
+              top: `${20 + (i * 15) % 60}%`,
               transform: `translate(${parallaxX * (i % 3 + 1)}px, ${parallaxY * (i % 3 + 1)}px)`
             }}
             animate={{
-              y: [0, -window.innerHeight * 0.3, -window.innerHeight],
-              rotate: [0, 360],
-              opacity: [0, 0.6, 0]
+              rotateY: [0, 360],
+              y: [0, -30, 0]
             }}
             transition={{
-              duration: 15 + i * 2,
-              repeat: Infinity,
-              ease: 'linear',
-              delay: i * 1.5
+              rotateY: {
+                duration: 20 + i * 3,
+                repeat: Infinity,
+                ease: 'linear'
+              },
+              y: {
+                duration: 4 + i,
+                repeat: Infinity,
+                ease: 'easeInOut'
+              }
             }}
           >
-            {['🔥', '🤘', '💀', '⚡', '🎸'][i % 5]}
+            <div className="wolf-body">
+              <div className="wolf-head">
+                <div className="wolf-ear wolf-ear-left"></div>
+                <div className="wolf-ear wolf-ear-right"></div>
+                <div className="wolf-snout"></div>
+                <div className="wolf-eye wolf-eye-left"></div>
+                <div className="wolf-eye wolf-eye-right"></div>
+              </div>
+              <div className="wolf-legs">
+                <div className="wolf-leg"></div>
+                <div className="wolf-leg"></div>
+              </div>
+              <div className="wolf-tail"></div>
+            </div>
+          </motion.div>
+        ))}
+
+        {/* Metal Arms */}
+        {Array.from({ length: 8 }).map((_, i) => (
+          <motion.div
+            key={`arm-${i}`}
+            className="metal-arm-3d"
+            style={{
+              left: `${(i * 15 + 10) % 100}%`,
+              top: `${10 + (i * 12) % 70}%`,
+              transform: `translate(${parallaxX * (i % 4 + 1)}px, ${parallaxY * (i % 4 + 1)}px)`
+            }}
+            animate={{
+              rotateZ: i % 2 === 0 ? [0, 360] : [360, 0],
+              scale: [1, 1.2, 1]
+            }}
+            transition={{
+              rotateZ: {
+                duration: 15 + i * 2,
+                repeat: Infinity,
+                ease: 'linear'
+              },
+              scale: {
+                duration: 3,
+                repeat: Infinity,
+                ease: 'easeInOut'
+              }
+            }}
+          >
+            <div className="metal-arm-upper">
+              <div className="metal-joint"></div>
+              <div className="metal-segment segment-1"></div>
+            </div>
+            <div className="metal-arm-lower">
+              <div className="metal-joint"></div>
+              <div className="metal-segment segment-2"></div>
+            </div>
+            <div className="metal-hand">
+              <div className="metal-finger"></div>
+              <div className="metal-finger"></div>
+              <div className="metal-finger"></div>
+            </div>
           </motion.div>
         ))}
       </div>
@@ -211,7 +273,7 @@ function App() {
         >
           <motion.h1
             className="main-title glitch"
-            data-text="SCARLET AURA"
+            data-text="ANTON"
             whileHover={{
               scale: 1.05,
               rotateX: 5,
@@ -219,7 +281,7 @@ function App() {
               transition: { duration: 0.3 }
             }}
           >
-            🔥 SCARLET AURA 🔥
+            🔥 ANTON 🔥
           </motion.h1>
           <motion.h2
             className="subtitle glow-text"

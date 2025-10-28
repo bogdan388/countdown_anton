@@ -78,8 +78,8 @@
   z-index: 9999;
 }
 
-/* MINIMAL FLOATING EMOJIS WITH PARALLAX */
-.emoji-background {
+/* 3D ELEMENTS BACKGROUND */
+.elements-3d-background {
   position: fixed;
   top: 0;
   left: 0;
@@ -87,14 +87,261 @@
   height: 100%;
   pointer-events: none;
   z-index: 1;
+  perspective: 1000px;
 }
 
-.floating-emoji {
+/* 3D WOLF */
+.wolf-3d {
   position: absolute;
-  opacity: 0.4;
-  pointer-events: none;
-  text-shadow: 0 0 20px #ff00ff;
-  will-change: transform;
+  width: 80px;
+  height: 80px;
+  transform-style: preserve-3d;
+  opacity: 0.7;
+  filter: drop-shadow(0 0 20px rgba(255, 100, 0, 0.6));
+}
+
+.wolf-body {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+.wolf-head {
+  position: absolute;
+  width: 40px;
+  height: 35px;
+  background: linear-gradient(135deg, #555555, #333333);
+  border-radius: 50% 50% 40% 40%;
+  top: 10px;
+  left: 20px;
+  transform: translateZ(20px);
+  box-shadow:
+    inset -5px -5px 10px rgba(0, 0, 0, 0.5),
+    0 0 15px rgba(255, 100, 0, 0.3);
+}
+
+.wolf-ear {
+  position: absolute;
+  width: 12px;
+  height: 18px;
+  background: linear-gradient(135deg, #666666, #444444);
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  top: -10px;
+}
+
+.wolf-ear-left {
+  left: 5px;
+  transform: rotate(-10deg);
+}
+
+.wolf-ear-right {
+  right: 5px;
+  transform: rotate(10deg);
+}
+
+.wolf-snout {
+  position: absolute;
+  width: 20px;
+  height: 15px;
+  background: linear-gradient(135deg, #444444, #222222);
+  border-radius: 40% 40% 50% 50%;
+  bottom: 0;
+  left: 10px;
+  transform: translateZ(10px);
+}
+
+.wolf-eye {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle, #ff6600, #ff0000);
+  border-radius: 50%;
+  top: 12px;
+  box-shadow: 0 0 10px #ff6600;
+  animation: wolf-eye-glow 2s ease-in-out infinite;
+}
+
+.wolf-eye-left {
+  left: 8px;
+}
+
+.wolf-eye-right {
+  right: 8px;
+}
+
+@keyframes wolf-eye-glow {
+  0%, 100% {
+    box-shadow: 0 0 10px #ff6600;
+    background: radial-gradient(circle, #ff6600, #ff0000);
+  }
+  50% {
+    box-shadow: 0 0 20px #ff0000, 0 0 30px #ff6600;
+    background: radial-gradient(circle, #ffff00, #ff6600);
+  }
+}
+
+.wolf-legs {
+  position: absolute;
+  bottom: 0;
+  left: 25px;
+  display: flex;
+  gap: 15px;
+}
+
+.wolf-leg {
+  width: 8px;
+  height: 25px;
+  background: linear-gradient(180deg, #555555, #333333);
+  border-radius: 4px;
+  transform: translateZ(5px);
+}
+
+.wolf-tail {
+  position: absolute;
+  width: 30px;
+  height: 10px;
+  background: linear-gradient(90deg, #555555, #333333);
+  border-radius: 50%;
+  bottom: 20px;
+  right: -15px;
+  transform: translateZ(-10px) rotate(-30deg);
+  animation: tail-wag 1s ease-in-out infinite;
+}
+
+@keyframes tail-wag {
+  0%, 100% { transform: translateZ(-10px) rotate(-30deg); }
+  50% { transform: translateZ(-10px) rotate(-50deg); }
+}
+
+/* 3D METAL ARM */
+.metal-arm-3d {
+  position: absolute;
+  width: 60px;
+  height: 120px;
+  transform-style: preserve-3d;
+  opacity: 0.8;
+  filter: drop-shadow(0 0 15px rgba(0, 200, 255, 0.5));
+}
+
+.metal-arm-upper,
+.metal-arm-lower {
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.metal-joint {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background:
+    radial-gradient(circle at 30% 30%, #ffffff, #999999 30%, #555555 60%, #222222);
+  border-radius: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateZ(15px);
+  box-shadow:
+    inset -3px -3px 8px rgba(0, 0, 0, 0.6),
+    inset 3px 3px 8px rgba(255, 255, 255, 0.3),
+    0 0 20px rgba(0, 200, 255, 0.4);
+  animation: joint-pulse 2s ease-in-out infinite;
+}
+
+@keyframes joint-pulse {
+  0%, 100% {
+    box-shadow:
+      inset -3px -3px 8px rgba(0, 0, 0, 0.6),
+      inset 3px 3px 8px rgba(255, 255, 255, 0.3),
+      0 0 20px rgba(0, 200, 255, 0.4);
+  }
+  50% {
+    box-shadow:
+      inset -3px -3px 8px rgba(0, 0, 0, 0.6),
+      inset 3px 3px 8px rgba(255, 255, 255, 0.3),
+      0 0 30px rgba(0, 255, 255, 0.6);
+  }
+}
+
+.metal-segment {
+  width: 15px;
+  height: 40px;
+  background: linear-gradient(135deg,
+    #888888 0%,
+    #cccccc 20%,
+    #666666 40%,
+    #999999 60%,
+    #555555 80%,
+    #777777 100%
+  );
+  margin: 10px auto;
+  border-radius: 3px;
+  position: relative;
+  box-shadow:
+    inset -2px -2px 5px rgba(0, 0, 0, 0.5),
+    inset 2px 2px 5px rgba(255, 255, 255, 0.3),
+    0 5px 15px rgba(0, 0, 0, 0.3);
+  transform: translateZ(10px);
+}
+
+.metal-segment::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, rgba(0, 200, 255, 0.8), transparent);
+  top: 50%;
+  animation: energy-flow 2s linear infinite;
+}
+
+@keyframes energy-flow {
+  0% { transform: translateY(-50%) scaleX(0); }
+  50% { transform: translateY(-50%) scaleX(1); }
+  100% { transform: translateY(-50%) scaleX(0); }
+}
+
+.segment-1 {
+  height: 35px;
+}
+
+.segment-2 {
+  height: 30px;
+}
+
+.metal-hand {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) translateZ(12px);
+  display: flex;
+  gap: 3px;
+  justify-content: center;
+}
+
+.metal-finger {
+  width: 4px;
+  height: 20px;
+  background: linear-gradient(180deg, #999999, #555555);
+  border-radius: 2px;
+  box-shadow:
+    inset -1px -1px 3px rgba(0, 0, 0, 0.5),
+    0 0 10px rgba(0, 200, 255, 0.3);
+  animation: finger-flex 3s ease-in-out infinite;
+}
+
+.metal-finger:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.metal-finger:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.metal-finger:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes finger-flex {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(0.8); }
 }
 
 /* TITLE SECTION */
@@ -711,6 +958,41 @@
   position: relative;
   z-index: 2;
   animation: fire-pulse 2s ease-in-out infinite;
+}
+
+/* RESPONSIVE 3D ELEMENTS */
+@media (max-width: 768px) {
+  .wolf-3d {
+    width: 60px;
+    height: 60px;
+  }
+
+  .wolf-head {
+    width: 30px;
+    height: 26px;
+  }
+
+  .metal-arm-3d {
+    width: 45px;
+    height: 90px;
+  }
+
+  .metal-segment {
+    width: 12px;
+    height: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .wolf-3d {
+    width: 50px;
+    height: 50px;
+  }
+
+  .metal-arm-3d {
+    width: 35px;
+    height: 70px;
+  }
 }
 
 /* RESPONSIVE FLAMES */
