@@ -169,7 +169,7 @@ function App() {
 
       {/* FLOATING BOGDAN NAMES EVERYWHERE */}
       <div className="floating-bogdan-container">
-        {Array.from({ length: 15 }).map((_, i) => (
+        {Array.from({ length: 7 }).map((_, i) => (
           <motion.div
             key={`bogdan-${i}`}
             className="floating-bogdan"
@@ -194,95 +194,6 @@ function App() {
         ))}
       </div>
 
-      {/* 3D Wolves and Metal Arms */}
-      <div className="elements-3d-background">
-        {/* Wolves */}
-        {Array.from({ length: 3 }).map((_, i) => (
-          <motion.div
-            key={`wolf-${i}`}
-            className="wolf-3d"
-            style={{
-              left: `${(i * 20 + 5) % 100}%`,
-              top: `${20 + (i * 15) % 60}%`,
-              transform: `translate(${parallaxX * (i % 3 + 1)}px, ${parallaxY * (i % 3 + 1)}px)`
-            }}
-            animate={{
-              rotateY: [0, 360],
-              y: [0, -30, 0]
-            }}
-            transition={{
-              rotateY: {
-                duration: 20 + i * 3,
-                repeat: Infinity,
-                ease: 'linear'
-              },
-              y: {
-                duration: 4 + i,
-                repeat: Infinity,
-                ease: 'easeInOut'
-              }
-            }}
-          >
-            <div className="wolf-body">
-              <div className="wolf-head">
-                <div className="wolf-ear wolf-ear-left"></div>
-                <div className="wolf-ear wolf-ear-right"></div>
-                <div className="wolf-snout"></div>
-                <div className="wolf-eye wolf-eye-left"></div>
-                <div className="wolf-eye wolf-eye-right"></div>
-              </div>
-              <div className="wolf-legs">
-                <div className="wolf-leg"></div>
-                <div className="wolf-leg"></div>
-              </div>
-              <div className="wolf-tail"></div>
-            </div>
-          </motion.div>
-        ))}
-
-        {/* Metal Arms */}
-        {Array.from({ length: 4 }).map((_, i) => (
-          <motion.div
-            key={`arm-${i}`}
-            className="metal-arm-3d"
-            style={{
-              left: `${(i * 15 + 10) % 100}%`,
-              top: `${10 + (i * 12) % 70}%`,
-              transform: `translate(${parallaxX * (i % 4 + 1)}px, ${parallaxY * (i % 4 + 1)}px)`
-            }}
-            animate={{
-              rotateZ: i % 2 === 0 ? [0, 360] : [360, 0],
-              scale: [1, 1.2, 1]
-            }}
-            transition={{
-              rotateZ: {
-                duration: 15 + i * 2,
-                repeat: Infinity,
-                ease: 'linear'
-              },
-              scale: {
-                duration: 3,
-                repeat: Infinity,
-                ease: 'easeInOut'
-              }
-            }}
-          >
-            <div className="metal-arm-upper">
-              <div className="metal-joint"></div>
-              <div className="metal-segment segment-1"></div>
-            </div>
-            <div className="metal-arm-lower">
-              <div className="metal-joint"></div>
-              <div className="metal-segment segment-2"></div>
-            </div>
-            <div className="metal-hand">
-              <div className="metal-finger"></div>
-              <div className="metal-finger"></div>
-              <div className="metal-finger"></div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
 
       <div className="content">
         {/* Animated gradient background blob */}
