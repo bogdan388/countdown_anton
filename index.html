@@ -329,17 +329,93 @@
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
+            .countdown-container {
+                padding: 20px;
+            }
+
+            .number-container {
+                transform: scale(0.9);
+            }
+
             .big-number {
-                font-size: 60vw;
+                font-size: 25vh;
+                font-weight: 900;
+                text-shadow:
+                    0 0 5px rgba(255, 100, 0, 0.9),
+                    0 0 10px rgba(255, 100, 0, 0.7),
+                    0 0 15px rgba(255, 100, 0, 0.5);
+                -webkit-text-stroke: 2px rgba(255, 100, 0, 0.3);
             }
+
+            .devil-silhouette {
+                width: 80vw;
+                height: 40vh;
+                opacity: 0.3;
+            }
+
+            .devil-head {
+                width: 50vw;
+                height: 35vh;
+                filter: blur(1px);
+                background: radial-gradient(ellipse at center,
+                    rgba(139, 0, 0, 0.9) 0%,
+                    rgba(139, 0, 0, 0.7) 30%,
+                    rgba(139, 0, 0, 0.4) 60%,
+                    transparent 100%);
+            }
+
+            .horn-left, .horn-right {
+                border-bottom-width: 6vh;
+                border-left-width: 3vh;
+                border-right-width: 3vh;
+            }
+
+            .horn-left {
+                left: 20%;
+            }
+
+            .horn-right {
+                right: 20%;
+            }
+
+            .devil-eyes {
+                top: 40%;
+                width: 50%;
+            }
+
+            .devil-eye {
+                width: 6vw;
+                height: 3vw;
+                filter: none;
+                background: radial-gradient(ellipse at center,
+                    rgba(255, 0, 0, 1),
+                    rgba(255, 100, 0, 0.8));
+            }
+
+            .devil-mouth {
+                width: 20vw;
+                height: 4vw;
+                border-bottom-width: 1vw;
+                filter: none;
+                border-color: rgba(139, 0, 0, 0.8);
+            }
+
             .days-text {
-                font-size: 2em;
+                font-size: 1.8em;
+                margin-top: 10px;
             }
+
             .concert-text {
-                font-size: 1.2em;
+                font-size: 1.1em;
             }
+
             .tap-text {
                 font-size: 2em;
+            }
+
+            /* Reduce flame particle count on mobile for performance */
+            #flameCanvas {
+                opacity: 0.8;
             }
         }
     </style>
@@ -393,8 +469,10 @@
             }
 
             init() {
-                // Create flame particles
-                for (let i = 0; i < 150; i++) {
+                // Create flame particles (fewer on mobile for performance)
+                const isMobile = window.innerWidth <= 768;
+                const particleCount = isMobile ? 50 : 150;
+                for (let i = 0; i < particleCount; i++) {
                     this.particles.push(this.createParticle());
                 }
             }
@@ -526,8 +604,9 @@
                     const flameAnim = new FlameAnimation(canvas);
                     flameAnim.animate();
 
-                    // Start creating sparks
-                    setInterval(createSpark, 100);
+                    // Start creating sparks (less frequent on mobile)
+                    const isMobile = window.innerWidth <= 768;
+                    setInterval(createSpark, isMobile ? 200 : 100);
 
                     // Add screen shake effect on reveal
                     document.body.style.animation = 'shake 0.5s';
